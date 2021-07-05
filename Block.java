@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Date;
 
 public class Block {
@@ -6,11 +7,12 @@ public class Block {
     public String previousHash;
     private String data; //our data will be a simple message.
     private long timeStamp; //as number of milliseconds since 1/1/1970.
+    public ArrayList<Transaction> transactions = new ArrayList<>();
     private int nonce;
 
     //Block Constructor.
-    public Block(String data,String previousHash ) {
-        this.data = data;
+    public Block(String previousHash ) {
+        //this.data = data;
         this.previousHash = previousHash;
         this.timeStamp = new Date().getTime();
 
@@ -35,6 +37,20 @@ public class Block {
             hash = calcHash();
         }
         System.out.println("Found Block : " + hash);
+    }
+
+    public void addTransaction(Transaction transaction) {
+        //process transaction and check if valid, unless block is genesis block then ignore.
+        if(transaction == null) return;
+        if((!"0".equals(previousHash))) {
+            if((!transaction.processTransaction())) {
+                System.out.println("Transaction failed to process. Discarded.");
+                return;
+            }
+        }
+
+        transactions.add(transaction);
+        System.out.println("Transaction Successfully added to Block");
     }
 
 }
