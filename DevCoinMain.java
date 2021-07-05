@@ -5,7 +5,7 @@ import java.util.HashMap;
 
 public class DevCoinMain {
 
-    public static ArrayList<Block> blockchain = new ArrayList<Block>();
+    public static ArrayList<Block> blockchain = new ArrayList<>();
     public static HashMap<String, TransactionOutput> UTXOs = new HashMap<>();
 
     public static int difficulty = 5;
@@ -16,7 +16,7 @@ public class DevCoinMain {
 
     public static void main(String[] args) {
         //add our blocks to the blockchain ArrayList:
-        Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider()); //Setup Bouncey castle as a Security Provider
+        Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider()); //Setup Bouncy castle as a Security Provider
 
         //Create wallets:
         walletA = new Wallet();
@@ -65,7 +65,7 @@ public class DevCoinMain {
         Block currentBlock;
         Block previousBlock;
         String hashTarget = new String(new char[difficulty]).replace('\0', '0');
-        HashMap<String, TransactionOutput> tempUTXOs = new HashMap<String, TransactionOutput>(); //a temporary working list of unspent transactions at a given block state.
+        HashMap<String, TransactionOutput> tempUTXOs = new HashMap<>(); //a temporary working list of unspent transactions at a given block state.
         tempUTXOs.put(genesisTransaction.outputs.get(0).id, genesisTransaction.outputs.get(0));
 
         //loop through blockchain to check hashes:
@@ -124,7 +124,7 @@ public class DevCoinMain {
                 }
 
                 if (currentTransaction.outputs.get(0).recipient != currentTransaction.recipient) {
-                    System.out.println("#Transaction(" + t + ") output reciepient is not who it should be");
+                    System.out.println("#Transaction(" + t + ") output recipient is not who it should be");
                     return false;
                 }
                 if (currentTransaction.outputs.get(1).recipient != currentTransaction.sender) {
@@ -148,7 +148,7 @@ public class DevCoinMain {
 /*
  * //public static void main(String[] args) {
 		//add our blocks to the blockchain ArrayList:
-		Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider()); //Setup Bouncey castle as a Security Provider
+		Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider()); //Setup Bouncy castle as a Security Provider
 		
 		//walletA = new Wallet();
 		//walletB = new Wallet();
@@ -163,7 +163,7 @@ public class DevCoinMain {
 		//transaction.signature = transaction.generateSignature(walletA.privateKey);
 		
 		//System.out.println("Is signature verified:");
-		//System.out.println(transaction.verifiySignature());
+		//System.out.println(transaction.verifySignature());
 		
 	//}
  */
