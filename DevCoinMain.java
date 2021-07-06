@@ -38,15 +38,15 @@ public class DevCoinMain {
         //testing
         Block block1 = new Block(genesis.hash);
         System.out.println("\nWalletA's balance is: " + walletA.getBalance());
-        System.out.println("\nWalletA is Attempting to send funds (40) to WalletB...");
-        block1.addTransaction(walletA.sendFunds(walletB.publicKey, 40f));
+        System.out.println("\nWalletA is Attempting to send funds (50) to WalletB...");
+        block1.addTransaction(walletA.sendFunds(walletB.publicKey, 50f));
         addBlock(block1);
         System.out.println("\nWalletA's balance is: " + walletA.getBalance());
         System.out.println("WalletB's balance is: " + walletB.getBalance());
 
         Block block2 = new Block(block1.hash);
-        System.out.println("\nWalletA Attempting to send more funds (1000) than it has...");
-        block2.addTransaction(walletA.sendFunds(walletB.publicKey, 1000f));
+        System.out.println("\nWalletA Attempting to send more funds (2000) than it has...");
+        block2.addTransaction(walletA.sendFunds(walletB.publicKey, 2000f));
         addBlock(block2);
         System.out.println("\nWalletA's balance is: " + walletA.getBalance());
         System.out.println("WalletB's balance is: " + walletB.getBalance());
@@ -75,17 +75,17 @@ public class DevCoinMain {
             previousBlock = blockchain.get(i - 1);
             //compare registered hash and calculated hash:
             if (!currentBlock.hash.equals(currentBlock.calcHash())) {
-                System.out.println("#Current Hashes not equal");
+                System.out.println("Error: Current Hashes not equal");
                 return false;
             }
             //compare previous hash and registered previous hash
             if (!previousBlock.hash.equals(currentBlock.previousHash)) {
-                System.out.println("#Previous Hashes not equal");
+                System.out.println("Error: Previous Hashes not equal");
                 return false;
             }
             //check if hash is solved
             if (!currentBlock.hash.substring(0, difficulty).equals(hashTarget)) {
-                System.out.println("#This block hasn't been mined");
+                System.out.println("Error: This block hasn't been mined");
                 return false;
             }
 
@@ -95,11 +95,11 @@ public class DevCoinMain {
                 Transaction currentTransaction = currentBlock.transactions.get(t);
 
                 if (!currentTransaction.verifySignature()) {
-                    System.out.println("#Signature on Transaction(" + t + ") is Invalid");
+                    System.out.println("Error: Signature on Transaction(" + t + ") is Invalid");
                     return false;
                 }
                 if (currentTransaction.getInputsValue() != currentTransaction.getOutputsValue()) {
-                    System.out.println("#Inputs are note equal to outputs on Transaction(" + t + ")");
+                    System.out.println("Error: Inputs are note equal to outputs on Transaction(" + t + ")");
                     return false;
                 }
 
@@ -107,12 +107,12 @@ public class DevCoinMain {
                     tempOutput = tempUTXOs.get(input.transactionOutputId);
 
                     if (tempOutput == null) {
-                        System.out.println("#Referenced input on Transaction(" + t + ") is Missing");
+                        System.out.println("Error: Referenced input on Transaction(" + t + ") is Missing");
                         return false;
                     }
 
                     if (input.UTXO.value != tempOutput.value) {
-                        System.out.println("#Referenced input Transaction(" + t + ") value is Invalid");
+                        System.out.println("Error: Referenced input Transaction(" + t + ") value is Invalid");
                         return false;
                     }
 
@@ -124,11 +124,11 @@ public class DevCoinMain {
                 }
 
                 if (currentTransaction.outputs.get(0).recipient != currentTransaction.recipient) {
-                    System.out.println("#Transaction(" + t + ") output recipient is not who it should be");
+                    System.out.println("Error: Transaction(" + t + ") output recipient is not who it should be");
                     return false;
                 }
                 if (currentTransaction.outputs.get(1).recipient != currentTransaction.sender) {
-                    System.out.println("#Transaction(" + t + ") output 'change' is not sender.");
+                    System.out.println("Error: Transaction(" + t + ") output 'change' is not sender.");
                     return false;
                 }
 
@@ -145,28 +145,3 @@ public class DevCoinMain {
     }
 }
 
-/*
- * //public static void main(String[] args) {
-		//add our blocks to the blockchain ArrayList:
-		Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider()); //Setup Bouncy castle as a Security Provider
-		
-		//walletA = new Wallet();
-		//walletB = new Wallet();
-		
-		//System.out.println("Private and public keys:");
-		//System.out.println(StringUtil.getStringFromKey(walletA.privateKey));
-		//System.out.println(StringUtil.getStringFromKey(walletA.publicKey));
-		
-		createGenesis();
-		
-		//Transaction transaction = new Transaction(walletA.publicKey, walletB.publicKey, 5);
-		//transaction.signature = transaction.generateSignature(walletA.privateKey);
-		
-		//System.out.println("Is signature verified:");
-		//System.out.println(transaction.verifySignature());
-		
-	//}
- */
-
-//System.out.println("Trying to Mine block 1... ");
-//addBlock(new Block("Hi im the first block", "0"));
