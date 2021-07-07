@@ -6,29 +6,29 @@ import java.util.HashMap;
 public class DevCoinMain {
 
     public static ArrayList<Block> blockchain = new ArrayList<>();
-    public static HashMap<String, TransactionOutput> UTXOs = new HashMap<>();
+    public static HashMap<String, TransactionOutput> UTXOs = new HashMap<>();//Unspent Transaction Output
 
     public static int difficulty = 5;
-    public static float minimumTransaction = 0.1f;
+    public static float minTransact = 0.1f;
     public static Wallet walletA;
     public static Wallet walletB;
     public static Transaction genesisTransaction;
 
     public static void main(String[] args) {
-        //add our blocks to the blockchain ArrayList:
+        //added blocks to the blockchain ArrayList:
         Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider()); //Setup Bouncy castle as a Security Provider
 
-        //Create wallets:
+        //Creating wallets:
         walletA = new Wallet();
         walletB = new Wallet();
         Wallet coinbase = new Wallet();
 
-        //create genesis transaction, which sends 100 NoobCoin to walletA:
+        //creating genesis transaction, which adds 100 DevCoins to walletA:
         genesisTransaction = new Transaction(coinbase.publicKey, walletA.publicKey, 100f, null);
-        genesisTransaction.generateSignature(coinbase.privateKey);     //manually sign the genesis transaction
-        genesisTransaction.transactionId = "0"; //manually set the transaction id
-        genesisTransaction.outputs.add(new TransactionOutput(genesisTransaction.recipient, genesisTransaction.value, genesisTransaction.transactionId)); //manually add the Transactions Output
-        UTXOs.put(genesisTransaction.outputs.get(0).id, genesisTransaction.outputs.get(0)); //its important to store our first transaction in the UTXOs list.
+        genesisTransaction.generateSignature(coinbase.privateKey);     //signing the genesis transaction
+        genesisTransaction.transactionId = "0"; //sets the transaction id
+        genesisTransaction.outputs.add(new TransactionOutput(genesisTransaction.recipient, genesisTransaction.value, genesisTransaction.transactionId));
+        UTXOs.put(genesisTransaction.outputs.get(0).id, genesisTransaction.outputs.get(0));
 
         System.out.println("Creating and Mining Genesis block... ");
         Block genesis = new Block("0");
@@ -65,31 +65,31 @@ public class DevCoinMain {
         Block currentBlock;
         Block previousBlock;
         String hashTarget = new String(new char[difficulty]).replace('\0', '0');
-        HashMap<String, TransactionOutput> tempUTXOs = new HashMap<>(); //a temporary working list of unspent transactions at a given block state.
+        HashMap<String, TransactionOutput> tempUTXOs = new HashMap<>(); //working list of unspent transactions at a given block state.
         tempUTXOs.put(genesisTransaction.outputs.get(0).id, genesisTransaction.outputs.get(0));
 
-        //loop through blockchain to check hashes:
+        //loops through blockchain to check hashes:
         for (int i = 1; i < blockchain.size(); i++) {
 
             currentBlock = blockchain.get(i);
             previousBlock = blockchain.get(i - 1);
-            //compare registered hash and calculated hash:
+            //compares registered hash and calculated hash:
             if (!currentBlock.hash.equals(currentBlock.calcHash())) {
                 System.out.println("Error: Current Hashes not equal");
                 return false;
             }
-            //compare previous hash and registered previous hash
+            //compares previous hash and registered previous hash
             if (!previousBlock.hash.equals(currentBlock.previousHash)) {
                 System.out.println("Error: Previous Hashes not equal");
                 return false;
             }
-            //check if hash is solved
+            //checks if hash is solved
             if (!currentBlock.hash.substring(0, difficulty).equals(hashTarget)) {
                 System.out.println("Error: This block hasn't been mined");
                 return false;
             }
 
-            //loop thru blockchains transactions:
+            //loops thru blockchains transactions:
             TransactionOutput tempOutput;
             for (int t = 0; t < currentBlock.transactions.size(); t++) {
                 Transaction currentTransaction = currentBlock.transactions.get(t);

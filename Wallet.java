@@ -9,12 +9,13 @@ public class Wallet {
     public PrivateKey privateKey;
     public PublicKey publicKey;
 
-    public HashMap<String,TransactionOutput> UTXOs = new HashMap<String,TransactionOutput>();
+    public HashMap<String,TransactionOutput> UTXOs = new HashMap<>();
 
     public Wallet() {
+
         generateKeyPair();
     }
-
+    //Generates an Elliptic Curve Key-Pair, sets private and public keys
     public void generateKeyPair() {
         try {
             KeyPairGenerator keyGen = KeyPairGenerator.getInstance("ECDSA","BC");

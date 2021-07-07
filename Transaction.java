@@ -35,9 +35,9 @@ public class Transaction {
         }
 
         //Checks if transaction is valid:
-        if(getInputsValue() < DevCoinMain.minimumTransaction) {
+        if(getInputsValue() < DevCoinMain.minTransact) {
             System.out.println("Transaction Inputs too small: " + getInputsValue());
-            System.out.println("Please enter the amount greater than " + DevCoinMain.minimumTransaction);
+            System.out.println("Please enter the amount greater than " + DevCoinMain.minTransact);
             return false;
         }
 
@@ -54,7 +54,7 @@ public class Transaction {
 
         //Remove transaction inputs from UTXO lists as spent:
         for(TransactionInput i : inputs) {
-            if(i.UTXO == null) continue; //if Transaction can't be found skip it
+            if(i.UTXO == null) continue; //Transaction skips if not found.
             DevCoinMain.UTXOs.remove(i.UTXO.id);
         }
 
@@ -64,19 +64,19 @@ public class Transaction {
     public float getInputsValue() {
         float total = 0;
         for(TransactionInput i : inputs) {
-            if(i.UTXO == null) continue; //if Transaction can't be found skip it, This behavior may not be optimal.
+            if(i.UTXO == null) continue; //Transaction skips if not found.
             total += i.UTXO.value;
         }
         return total;
     }
 
     public void generateSignature(PrivateKey privateKey) {
-        String data = StringUtil.getStringFromKey(sender) + StringUtil.getStringFromKey(recipient) + Float.toString(value)	;
+        String data = StringUtil.getStringFromKey(sender) + StringUtil.getStringFromKey(recipient) + value;
         signature = StringUtil.applyECDSASig(privateKey,data);
     }
 
     public boolean verifySignature() {
-        String data = StringUtil.getStringFromKey(sender) + StringUtil.getStringFromKey(recipient) + Float.toString(value)	;
+        String data = StringUtil.getStringFromKey(sender) + StringUtil.getStringFromKey(recipient) + value;
         return StringUtil.verifyECDSASig(sender, data, signature);
     }
 
@@ -93,7 +93,7 @@ public class Transaction {
         return StringUtil.applySha256(
                 StringUtil.getStringFromKey(sender) +
                         StringUtil.getStringFromKey(recipient) +
-                        Float.toString(value) + sequence
+                        value + sequence
         );
     }
 }
